@@ -11,6 +11,7 @@ const useStyles = makeStyles({
     background: "#007cad",
     height: 60,
     padding: "0 30px",
+    marginBottom: 10,
   },
 });
 
