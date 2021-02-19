@@ -1,6 +1,7 @@
 import { Grid, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForward";
+import axios from "axios";
 import { NextPage } from "next";
 import { useState } from "react";
 import Layout from "../components /Layout";
@@ -35,8 +36,44 @@ const HomePage: NextPage = () => {
   const classes = useStyles();
   const [error, setError] = useState(false);
   const [errorText, setErrorText] = useState("");
-  const [stock, setStock] = useState({});
+  const [stockInfo, setStockInfo] = useState({});
+  const [companyDetails, setCompanyDetails] = useState({});
+  const [symbol, setSymbol] = useState("");
   const [fetchedStock, setFetchedStock] = useState(false);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .get(
+        `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
+      )
+      .then((res) => {
+        console.log(res);
+        setCompanyDetails(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    axios
+      .get(
+        `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
+      )
+      .then((res) => {
+        console.log(res);
+        setStockInfo(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    setFetchedStock(true);
+  };
+  const onChange = (e) => {
+    setSymbol(e.target.value);
+  };
+
   return (
     <Layout>
       <div className={classes.root}>
@@ -44,17 +81,27 @@ const HomePage: NextPage = () => {
           <Grid item xs={12} sm={6}>
             <div className={classes.item}>
               <h1 style={{ fontSize: "18px" }}>Enter Ticker Symbol</h1>
-              <form>
+              <form onSubmit={onSubmit}>
                 <TextField
                   className={classes.formItem}
                   error={error}
+                  name="symbol"
+                  onChange={onChange}
                   label="TICKER"
                   helperText={errorText}
                   variant="outlined"
                 />
-                <ArrowForwardOutlinedIcon className={classes.icon} />
+                <ArrowForwardOutlinedIcon
+                  onClick={onSubmit}
+                  className={classes.icon}
+                />
               </form>
-              {fetchedStock && <div>THIS SHOULD BE INVISABLE</div>}
+              {fetchedStock && (
+                <div>
+                  <div>{companyDetails.name}</div>
+                  <div>{stockInfo.h}</div>
+                </div>
+              )}
             </div>
           </Grid>
           {/* <Divider orientation="vertical" flexItem /> */}
