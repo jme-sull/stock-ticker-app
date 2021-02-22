@@ -1,9 +1,17 @@
+import CssBaseline from "@material-ui/core/CssBaseline";
 import Head from "next/head";
-import "../styles/globals.css";
+import React from "react";
 
 function MyApp({ Component, pageProps }) {
+  React.useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector("#jss-server-side");
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+  }, []);
   return (
-    <>
+    <React.Fragment>
       <Head>
         <link
           rel="stylesheet"
@@ -14,8 +22,9 @@ function MyApp({ Component, pageProps }) {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </Head>
+      <CssBaseline />
       <Component {...pageProps} />
-    </>
+    </React.Fragment>
   );
 }
 
