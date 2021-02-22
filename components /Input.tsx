@@ -18,6 +18,7 @@ const useStyles = makeStyles({
     fontSize: 45,
     align: "center",
     marginLeft: "10px",
+    marginTop: "5px",
   },
 });
 
