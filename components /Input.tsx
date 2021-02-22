@@ -35,7 +35,7 @@ const Input = () => {
   const [errorText, setErrorText] = useState("");
   const [stockInfo, setStockInfo] = useState({});
   const [fetchedStockInfo, setFetchedStockInfo] = useState(false);
-  const [fetchingAllStock, setFetchingAllStocks] = useState(true);
+  const [fetchingAllSymbols, setFetchingAllSymbols] = useState(true);
   const [allStocks, setAllStocks] = useState([{}]);
   const [companyProfile, setCompanyProfile] = useState({});
   const [fetchedProfile, setFetchedProfile] = useState(false);
@@ -54,7 +54,7 @@ const Input = () => {
         console.log(err);
       })
       .finally(() => {
-        setFetchingAllStocks(false);
+        setFetchingAllSymbols(false);
       });
   }, []);
 
@@ -110,12 +110,13 @@ const Input = () => {
 
   return (
     <>
-      {fetchingAllStock ? (
+      {fetchingAllSymbols ? (
         <CircularProgress />
       ) : (
         <div>
           <h1 style={{ fontSize: "18px" }}>Enter Ticker Symbol</h1>
           <TextField
+            className={classes.formItem}
             error={error}
             name="symbol"
             onChange={onChange}
@@ -123,7 +124,10 @@ const Input = () => {
             helperText={errorText}
             variant="outlined"
           />
-          <ArrowForwardOutlinedIcon onClick={onSubmit} />
+          <ArrowForwardOutlinedIcon
+            className={classes.icon}
+            onClick={onSubmit}
+          />
           {fetchedStockInfo && fetchedProfile && (
             <div>
               <div>{companyProfile.name}</div>

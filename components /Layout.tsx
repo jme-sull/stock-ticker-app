@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     background: "#007cad",
     height: 60,
     padding: "0 30px",
-    marginBottom: 10,
+    marginBottom: 20,
   },
 });
 
@@ -19,9 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const classes = useStyles();
   return (
     <div>
-      <div className={classes.root}>
-        <AppBar />
-      </div>
+      <AppBar position="sticky" className={classes.root} />
       <main>{children}</main>
     </div>
   );

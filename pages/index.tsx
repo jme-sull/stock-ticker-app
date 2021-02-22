@@ -6,17 +6,14 @@ import Layout from "../components /Layout";
 const HomePage: NextPage = () => {
   return (
     <Layout>
-      <div>
-        <Grid container spacing={0}>
-          <Grid item xs={12} sm={6}>
-            <Input />
-          </Grid>
-          {/* <Divider orientation="vertical" flexItem /> */}
-          <Grid item xs={12} sm={6}>
-            <div>Box #2</div>
-          </Grid>
+      <Grid container spacing={0}>
+        <Grid item xs={12} sm={6}>
+          <Input />
         </Grid>
-      </div>
+        <Grid item xs={12} sm={6}>
+          <div>GRAPH GOES HERE</div>
+        </Grid>
+      </Grid>
     </Layout>
   );
 };
