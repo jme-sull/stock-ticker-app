@@ -34,7 +34,7 @@ const Input = () => {
   const [allStocks, setAllStocks] = useState([{}]);
   const [companyProfile, setCompanyProfile] = useState({});
   const [fetchedProfile, setFetchedProfile] = useState(false);
-  const [symbol, setSymbol] = useState("");
+  const [input, setInput] = useState("");
 
   useEffect(() => {
     axios
@@ -53,20 +53,20 @@ const Input = () => {
       });
   }, []);
 
-  const onSubmit = (e) => {
+  const onSubmit = (e, symbol) => {
     e.preventDefault();
     //reset
     setFetchingStock(false);
     setFetchedStockInfo(false);
     setFetchedProfile(false);
+    setFetchedPeers(false);
     setStockInfo({});
     setCompanyProfile({});
+    setPeers([]);
     //
     const matchSymbol = allStocks.filter((stock) => {
       return stock.symbol == symbol;
     });
-
-    console.log(matchSymbol);
 
     if (!matchSymbol.length) {
       setErrorText("Invalid Symbol");
@@ -75,6 +75,7 @@ const Input = () => {
       setErrorText("");
       setError(false);
       setFetchingStock(true);
+      console.log(symbol);
       axios
         .get(
           `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
@@ -107,9 +108,7 @@ const Input = () => {
           `https://finnhub.io/api/v1/stock/peers?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
         )
         .then((res) => {
-          const peersArray = res.data;
-          const sliced = peersArray.slice(2);
-          setPeers(sliced);
+          setPeers(res.data);
         })
         .catch((err) => {
           console.log(err);
@@ -121,7 +120,7 @@ const Input = () => {
   };
 
   const onChange = (e) => {
-    setSymbol(e.target.value);
+    setInput(e.target.value);
   };
 
   return (
@@ -131,11 +130,12 @@ const Input = () => {
       ) : (
         <div>
           <h1 style={{ fontSize: "18px" }}>Enter Ticker Symbol</h1>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={(e) => onSubmit(e, input)}>
             <TextField
               className={classes.formItem}
               error={error}
               name="symbol"
+              value={input}
               onChange={onChange}
               label="TICKER"
               helperText={errorText}
@@ -143,12 +143,13 @@ const Input = () => {
             />
             <ArrowForwardOutlinedIcon
               className={classes.icon}
-              onClick={onSubmit}
+              onClick={(e) => onSubmit(e, input)}
             />
           </form>
-          {fetchingStock && (!fetchedStockInfo || !fetchedProfile) && (
-            <CircularProgress />
-          )}
+          {fetchingStock &&
+            (!fetchedStockInfo || !fetchedProfile || !fetchedPeers) && (
+              <CircularProgress />
+            )}
           {fetchedStockInfo && fetchedPeers && fetchedProfile && (
             <div>
               <div>{companyProfile.ticker}</div>
@@ -160,7 +161,17 @@ const Input = () => {
               <div>Todays Low: {stockInfo.o}</div>
               <h3>Similar Companies</h3>
               {peers.slice(0, 3).map((item, index) => {
-                return <div key={index}>{item}</div>;
+                return (
+                  <div
+                    onClick={(e) => {
+                      setInput(item);
+                      onSubmit(e, item);
+                    }}
+                    key={index}
+                  >
+                    {item}
+                  </div>
+                );
               })}
             </div>
           )}
