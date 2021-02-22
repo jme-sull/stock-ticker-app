@@ -4,14 +4,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-    margin: 30,
-  },
-  item: {
-    height: "100vh",
-    padding: 10,
-  },
   formItem: {
     width: "70%",
   },
@@ -36,6 +28,7 @@ const Input = () => {
   const [stockInfo, setStockInfo] = useState({});
   const [fetchedStockInfo, setFetchedStockInfo] = useState(false);
   const [fetchingAllSymbols, setFetchingAllSymbols] = useState(true);
+  const [fetchingStock, setFetchingStock] = useState(false);
   const [allStocks, setAllStocks] = useState([{}]);
   const [companyProfile, setCompanyProfile] = useState({});
   const [fetchedProfile, setFetchedProfile] = useState(false);
@@ -60,8 +53,13 @@ const Input = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    //reset
+    setFetchingStock(false);
+    setFetchedStockInfo(false);
+    setFetchedProfile(false);
     setStockInfo({});
     setCompanyProfile({});
+    //
     const matchSymbol = allStocks.filter((stock) => {
       return stock.symbol == symbol;
     });
@@ -74,6 +72,7 @@ const Input = () => {
     } else {
       setErrorText("");
       setError(false);
+      setFetchingStock(true);
       axios
         .get(
           `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
@@ -115,19 +114,24 @@ const Input = () => {
       ) : (
         <div>
           <h1 style={{ fontSize: "18px" }}>Enter Ticker Symbol</h1>
-          <TextField
-            className={classes.formItem}
-            error={error}
-            name="symbol"
-            onChange={onChange}
-            label="TICKER"
-            helperText={errorText}
-            variant="outlined"
-          />
-          <ArrowForwardOutlinedIcon
-            className={classes.icon}
-            onClick={onSubmit}
-          />
+          <form onSubmit={onSubmit}>
+            <TextField
+              className={classes.formItem}
+              error={error}
+              name="symbol"
+              onChange={onChange}
+              label="TICKER"
+              helperText={errorText}
+              variant="outlined"
+            />
+            <ArrowForwardOutlinedIcon
+              className={classes.icon}
+              onClick={onSubmit}
+            />
+          </form>
+          {fetchingStock && (!fetchedStockInfo || !fetchedProfile) && (
+            <CircularProgress />
+          )}
           {fetchedStockInfo && fetchedProfile && (
             <div>
               <div>{companyProfile.name}</div>
