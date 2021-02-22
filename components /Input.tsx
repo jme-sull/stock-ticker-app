@@ -29,6 +29,8 @@ const Input = () => {
   const [fetchedStockInfo, setFetchedStockInfo] = useState(false);
   const [fetchingAllSymbols, setFetchingAllSymbols] = useState(true);
   const [fetchingStock, setFetchingStock] = useState(false);
+  const [peers, setPeers] = useState([]);
+  const [fetchedPeers, setFetchedPeers] = useState(false);
   const [allStocks, setAllStocks] = useState([{}]);
   const [companyProfile, setCompanyProfile] = useState({});
   const [fetchedProfile, setFetchedProfile] = useState(false);
@@ -100,6 +102,21 @@ const Input = () => {
         .finally(() => {
           setFetchedStockInfo(true);
         });
+      axios
+        .get(
+          `https://finnhub.io/api/v1/stock/peers?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
+        )
+        .then((res) => {
+          const peersArray = res.data;
+          const sliced = peersArray.slice(2);
+          setPeers(sliced);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setFetchedPeers(true);
+        });
     }
   };
 
@@ -132,10 +149,19 @@ const Input = () => {
           {fetchingStock && (!fetchedStockInfo || !fetchedProfile) && (
             <CircularProgress />
           )}
-          {fetchedStockInfo && fetchedProfile && (
+          {fetchedStockInfo && fetchedPeers && fetchedProfile && (
             <div>
+              <div>{companyProfile.ticker}</div>
               <div>{companyProfile.name}</div>
-              <div>{stockInfo.h}</div>
+              <div>Current Price: {stockInfo.c}</div>
+              <div>Previous Close: {stockInfo.pc}</div>
+              <div>Todays Open: {stockInfo.o}</div>
+              <div>Todays High: {stockInfo.o}</div>
+              <div>Todays Low: {stockInfo.o}</div>
+              <h3>Similar Companies</h3>
+              {peers.slice(0, 3).map((item, index) => {
+                return <div key={index}>{item}</div>;
+              })}
             </div>
           )}
         </div>
