@@ -1,10 +1,22 @@
-import { CircularProgress, makeStyles, TextField } from "@material-ui/core";
+import {
+  CircularProgress,
+  Grid,
+  makeStyles,
+  TextField,
+} from "@material-ui/core";
 import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import DisplayStats from "./DisplayStats";
+import Graph from "./Graph";
 
 const useStyles = makeStyles({
+  root: {
+    flexGrow: 1,
+  },
+  item: {
+    height: "100vh",
+  },
   formItem: {
     width: "70%",
   },
@@ -37,6 +49,8 @@ const Input = () => {
   const [companyProfile, setCompanyProfile] = useState({});
   const [fetchedProfile, setFetchedProfile] = useState(false);
   const [input, setInput] = useState("");
+  const [currentSymbol, setCurrentSymbol] = useState("");
+  const [showGraph, setShowGraph] = useState(false);
 
   useEffect(() => {
     axios
@@ -44,7 +58,6 @@ const Input = () => {
         "https://finnhub.io/api/v1/stock/symbol?exchange=US&token=c0o103748v6qah6rrt7g"
       )
       .then((res) => {
-        console.log(res);
         setAllStocks(res.data);
       })
       .catch((err) => {
@@ -74,16 +87,15 @@ const Input = () => {
       setErrorText("Invalid Symbol");
       setError(true);
     } else {
+      setCurrentSymbol(symbol);
       setErrorText("");
       setError(false);
       setFetchingStock(true);
-      console.log(symbol);
       axios
         .get(
           `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
         )
         .then((res) => {
-          console.log(res);
           setCompanyProfile(res.data);
         })
         .catch((err) => {
@@ -118,6 +130,8 @@ const Input = () => {
         .finally(() => {
           setFetchedPeers(true);
         });
+
+      setShowGraph(true);
     }
   };
 
@@ -126,44 +140,53 @@ const Input = () => {
   };
 
   return (
-    <>
-      {fetchingAllSymbols ? (
-        <CircularProgress />
-      ) : (
-        <div>
-          <h1 style={{ fontSize: "18px" }}>Enter Ticker Symbol</h1>
-          <form onSubmit={(e) => onSubmit(e, input)}>
-            <TextField
-              className={classes.formItem}
-              error={error}
-              name="symbol"
-              value={input}
-              onChange={onChange}
-              label="TICKER"
-              helperText={errorText}
-              variant="outlined"
-            />
-            <ArrowForwardOutlinedIcon
-              className={classes.icon}
-              onClick={(e) => onSubmit(e, input)}
-            />
-          </form>
-          {fetchingStock &&
-            (!fetchedStockInfo || !fetchedProfile || !fetchedPeers) && (
-              <CircularProgress />
-            )}
-          {fetchedStockInfo && fetchedPeers && fetchedProfile && (
-            <DisplayStats
-              peers={peers}
-              companyProfile={companyProfile}
-              stockInfo={stockInfo}
-              onSubmit={onSubmit}
-              setInput={setInput}
-            />
+    <div style={{ padding: "3%" }}>
+      <Grid className={classes.root} container spacing={0}>
+        <Grid className={classes.item} item xs={12} sm={6}>
+          {fetchingAllSymbols ? (
+            <CircularProgress />
+          ) : (
+            <div>
+              <h1 style={{ fontSize: "18px" }}>Enter Ticker Symbol</h1>
+              <form onSubmit={(e) => onSubmit(e, input)}>
+                <TextField
+                  className={classes.formItem}
+                  error={error}
+                  name="symbol"
+                  value={input}
+                  onChange={onChange}
+                  label="TICKER"
+                  helperText={errorText}
+                  variant="outlined"
+                />
+                <ArrowForwardOutlinedIcon
+                  className={classes.icon}
+                  onClick={(e) => onSubmit(e, input)}
+                />
+              </form>
+              {fetchingStock &&
+                (!fetchedStockInfo || !fetchedProfile || !fetchedPeers) && (
+                  <CircularProgress />
+                )}
+              {fetchedStockInfo && fetchedPeers && fetchedProfile && (
+                <DisplayStats
+                  peers={peers}
+                  companyProfile={companyProfile}
+                  stockInfo={stockInfo}
+                  onSubmit={onSubmit}
+                  setInput={setInput}
+                />
+              )}
+            </div>
           )}
-        </div>
-      )}
-    </>
+        </Grid>
+        {showGraph && (
+          <Grid className={classes.item} item xs={12} sm={6}>
+            <Graph symbol={currentSymbol} />
+          </Grid>
+        )}
+      </Grid>
+    </div>
   );
 };
 
