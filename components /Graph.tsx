@@ -2,8 +2,9 @@ import * as Moment from "moment";
 import { extendMoment } from "moment-range";
 import { Line } from "react-chartjs-2";
 
-const Graph = ({ label }) => {
+const Graph = ({ symbol }) => {
   const moment = extendMoment(Moment);
+
   const now = Date.now();
   const oneYearAgo = new Date().setFullYear(new Date().getFullYear() - 1);
   const nowFormatted = moment(now).format("MMM Do YYYY");
@@ -15,17 +16,11 @@ const Graph = ({ label }) => {
     labelsArray.push(moment(day._d).format("MMM Do YYYY"));
   });
 
-  console.log(now);
-  console.log(oneYearAgo);
-  console.log(range);
-  console.log(days);
-  console.log(labelsArray);
-
   const data = {
-    labels: [],
+    labels: labelsArray,
     datasets: [
       {
-        label: `${label}`,
+        label: `${symbol}`,
         fill: false,
         lineTension: 0.1,
         backgroundColor: "rgba(75,192,192,0.4)",
@@ -874,14 +869,12 @@ const Graph = ({ label }) => {
     ],
   };
 
-  const newData = { ...data, labels: labelsArray };
-
   return (
     <div>
       <h2>
         Daily Closing Price: {oneYearAgoFormatted} to {nowFormatted}
       </h2>
-      <Line data={newData} width={300} height={200} />
+      <Line data={data} width={300} height={200} />
     </div>
   );
 };
