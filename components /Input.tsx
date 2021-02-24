@@ -8,7 +8,7 @@ import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { fetchCompanyDetails } from "../actions";
+import { fetchCompanyDetails } from "../state/actions";
 import DisplayStats from "./DisplayStats";
 import Graph from "./Graph";
 

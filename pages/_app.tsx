@@ -2,7 +2,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Head from "next/head";
 import React from "react";
 import { Provider } from "react-redux";
-import { useStore } from "../store";
+import { useStore } from "../state/store";
 
 function MyApp({ Component, pageProps }) {
   const store = useStore(pageProps.initialReduxState);
