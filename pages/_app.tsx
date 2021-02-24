@@ -1,8 +1,11 @@
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Head from "next/head";
 import React from "react";
+import { Provider } from "react-redux";
+import { useStore } from "../store";
 
 function MyApp({ Component, pageProps }) {
+  const store = useStore(pageProps.initialReduxState);
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
@@ -20,7 +23,9 @@ function MyApp({ Component, pageProps }) {
         />
       </Head>
       <CssBaseline />
-      <Component {...pageProps} />
+      <Provider store={store}>
+        <Component {...pageProps} />
+      </Provider>
     </React.Fragment>
   );
 }

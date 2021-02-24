@@ -7,6 +7,8 @@ import {
 import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { fetchCompanyDetails } from "../actions";
 import DisplayStats from "./DisplayStats";
 import Graph from "./Graph";
 
@@ -36,6 +38,7 @@ const useStyles = makeStyles({
 
 const Input = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [error, setError] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [stockInfo, setStockInfo] = useState({});
@@ -90,19 +93,7 @@ const Input = () => {
       setErrorText("");
       setError(false);
       setFetchingStock(true);
-      axios
-        .get(
-          `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
-        )
-        .then((res) => {
-          setCompanyProfile(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setFetchedProfile(true);
-        });
+      dispatch(fetchCompanyDetails(symbol));
       axios
         .get(
           `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
@@ -169,14 +160,12 @@ const Input = () => {
                   onClick={(e) => onSubmit(e, input)}
                 />
               </form>
-              {fetchingStock &&
-                (!fetchedStockInfo || !fetchedProfile || !fetchedPeers) && (
-                  <CircularProgress />
-                )}
-              {fetchedStockInfo && fetchedPeers && fetchedProfile && (
+              {fetchingStock && (!fetchedStockInfo || !fetchedPeers) && (
+                <CircularProgress />
+              )}
+              {fetchedStockInfo && fetchedPeers && (
                 <DisplayStats
                   peers={peers}
-                  companyProfile={companyProfile}
                   stockInfo={stockInfo}
                   onSubmit={onSubmit}
                   setInput={setInput}
