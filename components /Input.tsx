@@ -24,14 +24,13 @@ const useStyles = makeStyles({
     backgroundColor: "#d7d7d8",
     color: "#878787",
     height: "100%",
-    borderRadius: 3,
+    borderRadius: 10,
     borderColor: "#969696",
-    borderWidth: "10px",
     cursor: "pointer",
-    fontSize: 45,
+    fontSize: 50,
     align: "center",
     marginLeft: "10px",
-    marginTop: "5px",
+    marginTop: "2px",
   },
 });
 
@@ -141,8 +140,14 @@ const Input = () => {
 
   return (
     <div style={{ padding: "3%" }}>
-      <Grid className={classes.root} container spacing={0}>
-        <Grid className={classes.item} item xs={12} sm={6}>
+      <Grid
+        direction="row"
+        justify="space-around"
+        className={classes.root}
+        container
+        spacing={0}
+      >
+        <Grid className={classes.item} item sm={6} xs={12}>
           {fetchingAllSymbols ? (
             <CircularProgress />
           ) : (
@@ -180,8 +185,9 @@ const Input = () => {
             </div>
           )}
         </Grid>
+
         {showGraph && (
-          <Grid className={classes.item} item xs={12} sm={6}>
+          <Grid item sm={6} xs={12} className={classes.item}>
             <Graph symbol={currentSymbol} />
           </Grid>
         )}

@@ -1,0 +1,66 @@
+.container {
+    margin-top: 2rem;
+}
+
+.header {
+    margin-bottom: 1rem;
+}
+
+.header h3 {
+    margin: 1px;
+}
+
+.header h2 {
+    margin: 1px;
+}
+
+.header p {
+    margin: 1px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #20601a;
+}
+
+.body {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 10rem;
+    justify-content: space-between;
+
+}
+.flexHeading {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    font-weight: bold;
+
+
+}
+.flexStats {
+    color: #20601a;
+    font-weight: bold
+}
+
+.peersContainer{ 
+   margin-top: 20px;
+   text-align: center;
+   width: fit-content;
+}
+
+.peersContainer h3 {
+    margin: 8px;
+    font-size: 18px;
+}
+
+.peers {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.peersItem {
+    color: #007cad;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+}
