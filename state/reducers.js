@@ -35,9 +35,42 @@ const companyDetailsReducer = (state = initialCompanyDetailsState, action) => {
   }
 };
 
+const initalQuoteState = {
+  quote: {},
+  loading: false,
+  error: null,
+};
+
+const quoteReducer = (state = initalQuoteState, action) => {
+  switch (action.type) {
+    case types.FETCH_QUOTE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case types.FETCH_QUOTE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        quote: action.payload,
+      };
+
+    case types.FETCH_QUOTE_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.error,
+      };
+    default:
+      return state;
+  }
+};
+
 // COMBINED REDUCERS
 const reducers = {
   companyDetails: companyDetailsReducer,
+  quote: quoteReducer,
 };
 
 export default combineReducers(reducers);

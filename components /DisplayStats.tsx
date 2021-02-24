@@ -1,14 +1,15 @@
 import { useSelector } from "react-redux";
 import styles from "./DisplayStats.module.css";
-const DisplayStats = ({ stockInfo, peers, setInput, onSubmit }) => {
+const DisplayStats = ({ peers, setInput, onSubmit }) => {
   const companyProfile = useSelector((state) => state.companyDetails);
+  const quote = useSelector((state) => state.quote.quote);
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h3>{companyProfile.ticker}</h3>
         <h2>{companyProfile.name}.</h2>
-        <p>{stockInfo.c}</p>
+        <p>{quote.c}</p>
       </div>
       <div className={styles.body}>
         <div className={styles.flexHeading}>
@@ -18,10 +19,10 @@ const DisplayStats = ({ stockInfo, peers, setInput, onSubmit }) => {
           <div>Todays Low: </div>
         </div>
         <div className={styles.flexStats}>
-          <div>{stockInfo.pc}</div>
-          <div>{stockInfo.o}</div>
-          <div>{stockInfo.o}</div>
-          <div>{stockInfo.o}</div>
+          <div>{quote.pc}</div>
+          <div>{quote.o}</div>
+          <div>{quote.h}</div>
+          <div>{quote.l}</div>
         </div>
       </div>
       <div className={styles.peersContainer}>

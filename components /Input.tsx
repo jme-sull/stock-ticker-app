@@ -8,7 +8,7 @@ import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { fetchCompanyDetails } from "../state/actions";
+import { fetchCompanyDetails, fetchStockInfo } from "../state/actions";
 import DisplayStats from "./DisplayStats";
 import Graph from "./Graph";
 
@@ -41,15 +41,10 @@ const Input = () => {
   const dispatch = useDispatch();
   const [error, setError] = useState(false);
   const [errorText, setErrorText] = useState("");
-  const [stockInfo, setStockInfo] = useState({});
-  const [fetchedStockInfo, setFetchedStockInfo] = useState(false);
   const [fetchingAllSymbols, setFetchingAllSymbols] = useState(true);
-  const [fetchingStock, setFetchingStock] = useState(false);
   const [peers, setPeers] = useState([]);
   const [fetchedPeers, setFetchedPeers] = useState(false);
   const [allStocks, setAllStocks] = useState([{}]);
-  const [companyProfile, setCompanyProfile] = useState({});
-  const [fetchedProfile, setFetchedProfile] = useState(false);
   const [input, setInput] = useState("");
   const [currentSymbol, setCurrentSymbol] = useState("");
   const [showGraph, setShowGraph] = useState(false);
@@ -73,12 +68,7 @@ const Input = () => {
   const onSubmit = (e, symbol) => {
     e.preventDefault();
     //reset
-    setFetchingStock(false);
-    setFetchedStockInfo(false);
-    setFetchedProfile(false);
     setFetchedPeers(false);
-    setStockInfo({});
-    setCompanyProfile({});
     setPeers([]);
     //
     const matchSymbol = allStocks.filter((stock) => {
@@ -92,21 +82,8 @@ const Input = () => {
       setCurrentSymbol(symbol);
       setErrorText("");
       setError(false);
-      setFetchingStock(true);
       dispatch(fetchCompanyDetails(symbol));
-      axios
-        .get(
-          `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
-        )
-        .then((res) => {
-          setStockInfo(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setFetchedStockInfo(true);
-        });
+      dispatch(fetchStockInfo(symbol));
       axios
         .get(
           `https://finnhub.io/api/v1/stock/peers?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
@@ -160,13 +137,9 @@ const Input = () => {
                   onClick={(e) => onSubmit(e, input)}
                 />
               </form>
-              {fetchingStock && (!fetchedStockInfo || !fetchedPeers) && (
-                <CircularProgress />
-              )}
-              {fetchedStockInfo && fetchedPeers && (
+              {fetchedPeers && (
                 <DisplayStats
                   peers={peers}
-                  stockInfo={stockInfo}
                   onSubmit={onSubmit}
                   setInput={setInput}
                 />
