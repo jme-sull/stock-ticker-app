@@ -1,11 +1,26 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCompanyDetails,
+  fetchPeers,
+  fetchStockInfo,
+  setSymbol,
+} from "../state/actions";
 import styles from "./DisplayStats.module.css";
 
 const DisplayStats = () => {
+  const dispatch = useDispatch();
   const companyProfile = useSelector((state) => state.companyDetails);
   const quote = useSelector((state) => state.quote.quote);
   const peers = useSelector((state) => state.peers.peers);
   const currentSymbol = useSelector((state) => state.symbol.currentSymbol);
+
+  const onClick = (e, symbol) => {
+    e.preventDefault();
+    dispatch(setSymbol(symbol));
+    dispatch(fetchCompanyDetails(symbol));
+    dispatch(fetchStockInfo(symbol));
+    dispatch(fetchPeers(symbol));
+  };
 
   return (
     <div className={styles.container}>
@@ -36,10 +51,7 @@ const DisplayStats = () => {
               {peers.slice(0, 3).map((item, index) => {
                 return (
                   <div
-                    // onClick={(e) => {
-                    //   setInput(item);
-                    //   onSubmit(e, item);
-                    // }}
+                    onClick={(e) => onClick(e, item)}
                     className={styles.peersItem}
                     key={index}
                   >
