@@ -8,7 +8,11 @@ import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { fetchCompanyDetails, fetchStockInfo } from "../state/actions";
+import {
+  fetchCompanyDetails,
+  fetchPeers,
+  fetchStockInfo,
+} from "../state/actions";
 import DisplayStats from "./DisplayStats";
 import Graph from "./Graph";
 
@@ -84,19 +88,7 @@ const Input = () => {
       setError(false);
       dispatch(fetchCompanyDetails(symbol));
       dispatch(fetchStockInfo(symbol));
-      axios
-        .get(
-          `https://finnhub.io/api/v1/stock/peers?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
-        )
-        .then((res) => {
-          setPeers(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setFetchedPeers(true);
-        });
+      dispatch(fetchPeers(symbol));
 
       setShowGraph(true);
     }
@@ -137,13 +129,7 @@ const Input = () => {
                   onClick={(e) => onSubmit(e, input)}
                 />
               </form>
-              {fetchedPeers && (
-                <DisplayStats
-                  peers={peers}
-                  onSubmit={onSubmit}
-                  setInput={setInput}
-                />
-              )}
+              <DisplayStats onSubmit={onSubmit} setInput={setInput} />
             </div>
           )}
         </Grid>

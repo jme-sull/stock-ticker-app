@@ -1,8 +1,10 @@
 import { useSelector } from "react-redux";
 import styles from "./DisplayStats.module.css";
-const DisplayStats = ({ peers, setInput, onSubmit }) => {
+
+const DisplayStats = ({ setInput, onSubmit }) => {
   const companyProfile = useSelector((state) => state.companyDetails);
   const quote = useSelector((state) => state.quote.quote);
+  const peers = useSelector((state) => state.peers.peers);
 
   return (
     <div className={styles.container}>

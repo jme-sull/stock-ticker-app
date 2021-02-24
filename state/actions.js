@@ -38,3 +38,22 @@ export const fetchStockInfo = (symbol) => (dispatch) => {
       })
     );
 };
+
+export const fetchPeers = (symbol) => (dispatch) => {
+  dispatch({ type: types.FETCH_PEERS_REQUEST });
+  Axios.get(
+    `https://finnhub.io/api/v1/stock/peers?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
+  )
+    .then((response) => {
+      dispatch({
+        type: types.FETCH_PEERS_SUCCESS,
+        payload: response.data,
+      });
+    })
+    .catch((error) =>
+      dispatch({
+        type: types.FETCH_PEERS_FAILURE,
+        error,
+      })
+    );
+};
