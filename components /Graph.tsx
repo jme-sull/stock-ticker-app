@@ -70,7 +70,7 @@ const Graph = () => {
   };
 
   return (
-    <div>
+    <>
       {symbol && (
         <>
           <h2>
@@ -79,7 +79,7 @@ const Graph = () => {
           <Line data={data} width={300} height={200} />
         </>
       )}
-    </div>
+    </>
   );
 };
 
