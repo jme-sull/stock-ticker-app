@@ -57,3 +57,10 @@ export const fetchPeers = (symbol) => (dispatch) => {
       })
     );
 };
+
+export const setSymbol = (symbol) => (dispatch) => {
+  dispatch({
+    type: types.SET_SYMBOL,
+    payload: symbol,
+  });
+};

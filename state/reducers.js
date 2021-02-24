@@ -98,11 +98,27 @@ const peersReducer = (state = initalPeersState, action) => {
   }
 };
 
+const initalSymbolState = {
+  currentSymbol: null,
+};
+const symbolReducer = (state = initalSymbolState, action) => {
+  switch (action.type) {
+    case types.SET_SYMBOL:
+      return {
+        ...state,
+        currentSymbol: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
 // COMBINED REDUCERS
 const reducers = {
   companyDetails: companyDetailsReducer,
   quote: quoteReducer,
   peers: peersReducer,
+  symbol: symbolReducer,
 };
 
 export default combineReducers(reducers);

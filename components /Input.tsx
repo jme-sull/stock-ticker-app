@@ -1,9 +1,4 @@
-import {
-  CircularProgress,
-  Grid,
-  makeStyles,
-  TextField,
-} from "@material-ui/core";
+import { CircularProgress, makeStyles, TextField } from "@material-ui/core";
 import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -12,9 +7,8 @@ import {
   fetchCompanyDetails,
   fetchPeers,
   fetchStockInfo,
+  setSymbol,
 } from "../state/actions";
-import DisplayStats from "./DisplayStats";
-import Graph from "./Graph";
 
 const useStyles = makeStyles({
   root: {
@@ -46,12 +40,8 @@ const Input = () => {
   const [error, setError] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [fetchingAllSymbols, setFetchingAllSymbols] = useState(true);
-  const [peers, setPeers] = useState([]);
-  const [fetchedPeers, setFetchedPeers] = useState(false);
   const [allStocks, setAllStocks] = useState([{}]);
   const [input, setInput] = useState("");
-  const [currentSymbol, setCurrentSymbol] = useState("");
-  const [showGraph, setShowGraph] = useState(false);
 
   useEffect(() => {
     axios
@@ -71,10 +61,7 @@ const Input = () => {
 
   const onSubmit = (e, symbol) => {
     e.preventDefault();
-    //reset
-    setFetchedPeers(false);
-    setPeers([]);
-    //
+
     const matchSymbol = allStocks.filter((stock) => {
       return stock.symbol == symbol;
     });
@@ -83,14 +70,12 @@ const Input = () => {
       setErrorText("Invalid Symbol");
       setError(true);
     } else {
-      setCurrentSymbol(symbol);
       setErrorText("");
       setError(false);
+      dispatch(setSymbol(symbol));
       dispatch(fetchCompanyDetails(symbol));
       dispatch(fetchStockInfo(symbol));
       dispatch(fetchPeers(symbol));
-
-      setShowGraph(true);
     }
   };
 
@@ -99,47 +84,30 @@ const Input = () => {
   };
 
   return (
-    <div style={{ padding: "3%" }}>
-      <Grid
-        direction="row"
-        justify="space-around"
-        className={classes.root}
-        container
-        spacing={0}
-      >
-        <Grid className={classes.item} item sm={6} xs={12}>
-          {fetchingAllSymbols ? (
-            <CircularProgress />
-          ) : (
-            <div>
-              <h1 style={{ fontSize: "18px" }}>Enter Ticker Symbol</h1>
-              <form onSubmit={(e) => onSubmit(e, input)}>
-                <TextField
-                  className={classes.formItem}
-                  error={error}
-                  name="symbol"
-                  value={input}
-                  onChange={onChange}
-                  label="TICKER"
-                  helperText={errorText}
-                  variant="outlined"
-                />
-                <ArrowForwardOutlinedIcon
-                  className={classes.icon}
-                  onClick={(e) => onSubmit(e, input)}
-                />
-              </form>
-              <DisplayStats onSubmit={onSubmit} setInput={setInput} />
-            </div>
-          )}
-        </Grid>
-
-        {showGraph && (
-          <Grid item sm={6} xs={12} className={classes.item}>
-            <Graph symbol={currentSymbol} />
-          </Grid>
-        )}
-      </Grid>
+    <div>
+      {fetchingAllSymbols ? (
+        <CircularProgress />
+      ) : (
+        <div>
+          <h1 style={{ fontSize: "18px" }}>Enter Ticker Symbol</h1>
+          <form onSubmit={(e) => onSubmit(e, input)}>
+            <TextField
+              className={classes.formItem}
+              error={error}
+              name="symbol"
+              value={input}
+              onChange={onChange}
+              label="TICKER"
+              helperText={errorText}
+              variant="outlined"
+            />
+            <ArrowForwardOutlinedIcon
+              className={classes.icon}
+              onClick={(e) => onSubmit(e, input)}
+            />
+          </form>
+        </div>
+      )}
     </div>
   );
 };
