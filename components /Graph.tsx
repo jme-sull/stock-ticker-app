@@ -2,8 +2,10 @@ import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { useSelector } from "react-redux";
 
-const Graph = ({ symbol }) => {
+const Graph = () => {
+  const symbol = useSelector((state) => state.symbol.currentSymbol);
   const [stockData, setStockData] = useState([]);
   const [timeStamps, setTimeStamps] = useState([]);
 
@@ -25,17 +27,19 @@ const Graph = ({ symbol }) => {
   const myNewLabels = getLabels();
 
   useEffect(() => {
-    axios
-      .get(
-        `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=${oneYearAgo}&to=${now}&token=c0o103748v6qah6rrt7g`
-      )
-      .then((res) => {
-        setStockData(res.data.c);
-        setTimeStamps(res.data.t);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (symbol) {
+      axios
+        .get(
+          `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=${oneYearAgo}&to=${now}&token=c0o103748v6qah6rrt7g`
+        )
+        .then((res) => {
+          setStockData(res.data.c);
+          setTimeStamps(res.data.t);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, [symbol]);
 
   const data = {
@@ -67,10 +71,14 @@ const Graph = ({ symbol }) => {
 
   return (
     <div>
-      <h2>
-        Daily Closing Price: {oneYearAgoFormatted} to {nowFormatted}
-      </h2>
-      <Line data={data} width={300} height={200} />
+      {symbol && (
+        <>
+          <h2>
+            Daily Closing Price: {oneYearAgoFormatted} to {nowFormatted}
+          </h2>
+          <Line data={data} width={300} height={200} />
+        </>
+      )}
     </div>
   );
 };

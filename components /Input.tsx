@@ -1,14 +1,14 @@
-import {
-  CircularProgress,
-  Grid,
-  makeStyles,
-  TextField,
-} from "@material-ui/core";
+import { CircularProgress, makeStyles, TextField } from "@material-ui/core";
 import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import DisplayStats from "./DisplayStats";
-import Graph from "./Graph";
+import { useDispatch } from "react-redux";
+import {
+  fetchCompanyDetails,
+  fetchPeers,
+  fetchStockInfo,
+  setSymbol,
+} from "../state/actions";
 
 const useStyles = makeStyles({
   root: {
@@ -24,33 +24,24 @@ const useStyles = makeStyles({
     backgroundColor: "#d7d7d8",
     color: "#878787",
     height: "100%",
-    borderRadius: 3,
+    borderRadius: 10,
     borderColor: "#969696",
-    borderWidth: "10px",
     cursor: "pointer",
-    fontSize: 45,
+    fontSize: 50,
     align: "center",
     marginLeft: "10px",
-    marginTop: "5px",
+    marginTop: "2px",
   },
 });
 
 const Input = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [error, setError] = useState(false);
   const [errorText, setErrorText] = useState("");
-  const [stockInfo, setStockInfo] = useState({});
-  const [fetchedStockInfo, setFetchedStockInfo] = useState(false);
   const [fetchingAllSymbols, setFetchingAllSymbols] = useState(true);
-  const [fetchingStock, setFetchingStock] = useState(false);
-  const [peers, setPeers] = useState([]);
-  const [fetchedPeers, setFetchedPeers] = useState(false);
   const [allStocks, setAllStocks] = useState([{}]);
-  const [companyProfile, setCompanyProfile] = useState({});
-  const [fetchedProfile, setFetchedProfile] = useState(false);
   const [input, setInput] = useState("");
-  const [currentSymbol, setCurrentSymbol] = useState("");
-  const [showGraph, setShowGraph] = useState(false);
 
   useEffect(() => {
     axios
@@ -70,15 +61,7 @@ const Input = () => {
 
   const onSubmit = (e, symbol) => {
     e.preventDefault();
-    //reset
-    setFetchingStock(false);
-    setFetchedStockInfo(false);
-    setFetchedProfile(false);
-    setFetchedPeers(false);
-    setStockInfo({});
-    setCompanyProfile({});
-    setPeers([]);
-    //
+
     const matchSymbol = allStocks.filter((stock) => {
       return stock.symbol == symbol;
     });
@@ -87,51 +70,12 @@ const Input = () => {
       setErrorText("Invalid Symbol");
       setError(true);
     } else {
-      setCurrentSymbol(symbol);
       setErrorText("");
       setError(false);
-      setFetchingStock(true);
-      axios
-        .get(
-          `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
-        )
-        .then((res) => {
-          setCompanyProfile(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setFetchedProfile(true);
-        });
-      axios
-        .get(
-          `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
-        )
-        .then((res) => {
-          setStockInfo(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setFetchedStockInfo(true);
-        });
-      axios
-        .get(
-          `https://finnhub.io/api/v1/stock/peers?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
-        )
-        .then((res) => {
-          setPeers(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setFetchedPeers(true);
-        });
-
-      setShowGraph(true);
+      dispatch(setSymbol(symbol));
+      dispatch(fetchCompanyDetails(symbol));
+      dispatch(fetchStockInfo(symbol));
+      dispatch(fetchPeers(symbol));
     }
   };
 
@@ -140,52 +84,30 @@ const Input = () => {
   };
 
   return (
-    <div style={{ padding: "3%" }}>
-      <Grid className={classes.root} container spacing={0}>
-        <Grid className={classes.item} item xs={12} sm={6}>
-          {fetchingAllSymbols ? (
-            <CircularProgress />
-          ) : (
-            <div>
-              <h1 style={{ fontSize: "18px" }}>Enter Ticker Symbol</h1>
-              <form onSubmit={(e) => onSubmit(e, input)}>
-                <TextField
-                  className={classes.formItem}
-                  error={error}
-                  name="symbol"
-                  value={input}
-                  onChange={onChange}
-                  label="TICKER"
-                  helperText={errorText}
-                  variant="outlined"
-                />
-                <ArrowForwardOutlinedIcon
-                  className={classes.icon}
-                  onClick={(e) => onSubmit(e, input)}
-                />
-              </form>
-              {fetchingStock &&
-                (!fetchedStockInfo || !fetchedProfile || !fetchedPeers) && (
-                  <CircularProgress />
-                )}
-              {fetchedStockInfo && fetchedPeers && fetchedProfile && (
-                <DisplayStats
-                  peers={peers}
-                  companyProfile={companyProfile}
-                  stockInfo={stockInfo}
-                  onSubmit={onSubmit}
-                  setInput={setInput}
-                />
-              )}
-            </div>
-          )}
-        </Grid>
-        {showGraph && (
-          <Grid className={classes.item} item xs={12} sm={6}>
-            <Graph symbol={currentSymbol} />
-          </Grid>
-        )}
-      </Grid>
+    <div>
+      {fetchingAllSymbols ? (
+        <CircularProgress />
+      ) : (
+        <div>
+          <h1 style={{ fontSize: "18px" }}>Enter Ticker Symbol</h1>
+          <form onSubmit={(e) => onSubmit(e, input)}>
+            <TextField
+              className={classes.formItem}
+              error={error}
+              name="symbol"
+              value={input}
+              onChange={onChange}
+              label="TICKER"
+              helperText={errorText}
+              variant="outlined"
+            />
+            <ArrowForwardOutlinedIcon
+              className={classes.icon}
+              onClick={(e) => onSubmit(e, input)}
+            />
+          </form>
+        </div>
+      )}
     </div>
   );
 };
