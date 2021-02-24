@@ -1,0 +1,31 @@
+.container {
+    display: flex;
+    margin: 2%;
+    justify-content: space-between;
+}
+
+.flexItem {
+    width: 45%;
+
+}
+
+.divider {
+    width: 2px;
+    height: 100vh;
+    background-color: grey;
+    align-self: center;
+}
+
+@media (max-width: 768px){
+    .container {
+        flex-direction: column;
+    }
+
+    .divider {
+        display: none;
+    }
+
+    .flexItem {
+        width: 100%;
+    }
+}

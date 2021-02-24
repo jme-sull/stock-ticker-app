@@ -2,7 +2,7 @@ import { CircularProgress, makeStyles, TextField } from "@material-ui/core";
 import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForward";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCompanyDetails,
   fetchPeers,
@@ -42,6 +42,15 @@ const Input = () => {
   const [fetchingAllSymbols, setFetchingAllSymbols] = useState(true);
   const [allStocks, setAllStocks] = useState([{}]);
   const [input, setInput] = useState("");
+  const currentSymbol = useSelector((state) => state.symbol.currentSymbol);
+
+  useEffect(() => {
+    if (currentSymbol) {
+      setError(false);
+      setErrorText("");
+      setInput(currentSymbol);
+    }
+  }, [currentSymbol]);
 
   useEffect(() => {
     axios
@@ -61,7 +70,6 @@ const Input = () => {
 
   const onSubmit = (e, symbol) => {
     e.preventDefault();
-
     const matchSymbol = allStocks.filter((stock) => {
       return stock.symbol == symbol;
     });
@@ -84,7 +92,7 @@ const Input = () => {
   };
 
   return (
-    <div>
+    <>
       {fetchingAllSymbols ? (
         <CircularProgress />
       ) : (
@@ -108,7 +116,7 @@ const Input = () => {
           </form>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
