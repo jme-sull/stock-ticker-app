@@ -1,14 +1,19 @@
+import { Snackbar } from "@material-ui/core";
 import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useSelector } from "react-redux";
 import { createGraphDataUrl } from "../utils/url";
+import Alert from "./Alert";
 
 const Graph = () => {
-  const symbol = useSelector((state) => state.symbol.currentSymbol);
+  const [showServerError, setShowServerError] = useState(false);
+  const [serverError, setServerError] = useState({ message: "" });
   const [stockData, setStockData] = useState([]);
   const [timeStamps, setTimeStamps] = useState([]);
+
+  const symbol = useSelector((state) => state.symbol.currentSymbol);
 
   const now = Math.floor(Date.now() / 1000);
   const oneYearAgo = Math.floor(now - 31556926);
@@ -27,6 +32,10 @@ const Graph = () => {
 
   const graphLabels = getLabels();
 
+  const handleClose = (e) => {
+    setShowServerError(false);
+  };
+
   useEffect(() => {
     if (symbol) {
       const url = createGraphDataUrl(symbol, oneYearAgo, now);
@@ -37,7 +46,8 @@ const Graph = () => {
           setTimeStamps(res.data.t);
         })
         .catch((err) => {
-          console.log(err);
+          setServerError(err);
+          setShowServerError(true);
         });
     }
   }, [symbol]);
@@ -76,7 +86,17 @@ const Graph = () => {
           <h2>
             Daily Closing Price: {oneYearAgoFormatted} to {nowFormatted}
           </h2>
-          <Line data={data} width={300} height={200} />
+          {!showServerError && <Line data={data} width={300} height={200} />}
+
+          <Snackbar
+            open={showServerError}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert onClose={handleClose} severity="error">
+              Graph Error: {serverError.message}
+            </Alert>
+          </Snackbar>
         </>
       )}
     </>

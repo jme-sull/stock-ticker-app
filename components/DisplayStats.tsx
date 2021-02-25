@@ -1,5 +1,4 @@
 import { Snackbar } from "@material-ui/core";
-import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -9,14 +8,11 @@ import {
   setSymbol,
 } from "../state/actions";
 import styles from "../styles/DisplayStats.module.css";
-
-function Alert(props: AlertProps) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import Alert from "./Alert";
 
 const DisplayStats = () => {
   const [showServerError, setShowServerError] = useState(false);
-  const [serverError, setServerError] = useState({});
+  const [serverError, setServerError] = useState({ message: "" });
   const [peerError, setPeerError] = useState(false);
   const [quoteError, setQuoteError] = useState(false);
   const [detailsError, setDetailsError] = useState(false);
@@ -137,7 +133,7 @@ const DisplayStats = () => {
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity="error">
-          {serverError.message}
+          Display Error: {serverError.message}
         </Alert>
       </Snackbar>
     </div>
