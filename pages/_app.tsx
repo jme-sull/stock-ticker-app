@@ -1,7 +1,7 @@
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Head from "next/head";
 import React from "react";
-import { Provider } from "../components/node_modules/react-redux";
+import { Provider } from "react-redux";
 import { useStore } from "../state/store";
 
 function MyApp({ Component, pageProps }) {

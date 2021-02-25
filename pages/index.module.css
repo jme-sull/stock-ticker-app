@@ -5,13 +5,14 @@
 }
 
 .flexItem {
-    width: 45%;
+    width: 49%;
     padding: 2%;
+    margin: 1rem;
 
 }
 
 .divider {
-    width: 2px;
+    width: 1px;
     height: 100vh;
     background-color: grey;
     align-self: center;
