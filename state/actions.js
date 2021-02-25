@@ -1,11 +1,15 @@
 import Axios from "axios";
+import {
+  createCompanyDetailsUrl,
+  createPeersUrl,
+  createQuoteUrl,
+} from "../utils/url";
 import * as types from "./types";
 
 export const fetchCompanyDetails = (symbol) => (dispatch) => {
   dispatch({ type: types.FETCH_COMP_DETAIL_REQUEST });
-  Axios.get(
-    `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
-  )
+  const url = createCompanyDetailsUrl(symbol);
+  Axios.get(url)
     .then((response) => {
       dispatch({
         type: types.FETCH_COMP_DETAIL_SUCCESS,
@@ -22,9 +26,8 @@ export const fetchCompanyDetails = (symbol) => (dispatch) => {
 
 export const fetchStockInfo = (symbol) => (dispatch) => {
   dispatch({ type: types.FETCH_QUOTE_REQUEST });
-  Axios.get(
-    `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
-  )
+  const url = createQuoteUrl(symbol);
+  Axios.get(url)
     .then((response) => {
       dispatch({
         type: types.FETCH_QUOTE_SUCCESS,
@@ -41,9 +44,8 @@ export const fetchStockInfo = (symbol) => (dispatch) => {
 
 export const fetchPeers = (symbol) => (dispatch) => {
   dispatch({ type: types.FETCH_PEERS_REQUEST });
-  Axios.get(
-    `https://finnhub.io/api/v1/stock/peers?symbol=${symbol}&token=c0o103748v6qah6rrt7g`
-  )
+  const url = createPeersUrl(symbol);
+  Axios.get(url)
     .then((response) => {
       dispatch({
         type: types.FETCH_PEERS_SUCCESS,

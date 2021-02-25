@@ -9,6 +9,7 @@ import {
   fetchStockInfo,
   setSymbol,
 } from "../state/actions";
+import { allStockSymbolsUrl } from "../utils/url";
 
 const useStyles = makeStyles({
   root: {
@@ -40,7 +41,7 @@ const Input = () => {
   const [error, setError] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [fetchingAllSymbols, setFetchingAllSymbols] = useState(true);
-  const [allStocks, setAllStocks] = useState([{}]);
+  const [allStocks, setAllStocks] = useState([]);
   const [input, setInput] = useState("");
   const currentSymbol = useSelector((state) => state.symbol.currentSymbol);
 
@@ -54,9 +55,7 @@ const Input = () => {
 
   useEffect(() => {
     axios
-      .get(
-        "https://finnhub.io/api/v1/stock/symbol?exchange=US&token=c0o103748v6qah6rrt7g"
-      )
+      .get(allStockSymbolsUrl)
       .then((res) => {
         setAllStocks(res.data);
       })

@@ -3,6 +3,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useSelector } from "react-redux";
+import { createGraphDataUrl } from "../utils/url";
 
 const Graph = () => {
   const symbol = useSelector((state) => state.symbol.currentSymbol);
@@ -28,10 +29,9 @@ const Graph = () => {
 
   useEffect(() => {
     if (symbol) {
+      const url = createGraphDataUrl(symbol, oneYearAgo, now);
       axios
-        .get(
-          `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=${oneYearAgo}&to=${now}&token=c0o103748v6qah6rrt7g`
-        )
+        .get(url)
         .then((res) => {
           setStockData(res.data.c);
           setTimeStamps(res.data.t);
