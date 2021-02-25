@@ -20,6 +20,7 @@ const companyDetailsReducer = (state = initialCompanyDetailsState, action) => {
       return {
         ...state,
         loading: false,
+        error: null,
         name: action.payload.name,
         ticker: action.payload.ticker,
       };
@@ -53,6 +54,7 @@ const quoteReducer = (state = initalQuoteState, action) => {
       return {
         ...state,
         loading: false,
+        error: null,
         quote: action.payload,
       };
 
@@ -84,6 +86,7 @@ const peersReducer = (state = initalPeersState, action) => {
       return {
         ...state,
         loading: false,
+        error: null,
         peers: action.payload,
       };
 

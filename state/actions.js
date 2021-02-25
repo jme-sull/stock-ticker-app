@@ -24,7 +24,7 @@ export const fetchCompanyDetails = (symbol) => (dispatch) => {
     );
 };
 
-export const fetchStockInfo = (symbol) => (dispatch) => {
+export const fetchQuote = (symbol) => (dispatch) => {
   dispatch({ type: types.FETCH_QUOTE_REQUEST });
   const url = createQuoteUrl(symbol);
   Axios.get(url)

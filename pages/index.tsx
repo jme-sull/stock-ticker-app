@@ -3,7 +3,7 @@ import DisplayStats from "../components/DisplayStats";
 import Graph from "../components/Graph";
 import Input from "../components/Input";
 import Layout from "../components/Layout";
-import styles from "./index.module.css";
+import styles from "../styles/index.module.css";
 
 const HomePage: NextPage = () => {
   return (

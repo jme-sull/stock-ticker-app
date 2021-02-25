@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCompanyDetails,
   fetchPeers,
-  fetchStockInfo,
+  fetchQuote,
   setSymbol,
 } from "../state/actions";
 import { allStockSymbolsUrl } from "../utils/url";
@@ -67,12 +67,13 @@ const Input = () => {
       });
   }, []);
 
-  const onSubmit = (e, symbol) => {
+  const onSubmit = (e, symbol: string) => {
     e.preventDefault();
+    console.log(allStocks);
     const matchSymbol = allStocks.filter((stock) => {
       return stock.symbol == symbol;
     });
-
+    console.log(matchSymbol);
     if (!matchSymbol.length) {
       setErrorText("Invalid Symbol");
       setError(true);
@@ -81,7 +82,7 @@ const Input = () => {
       setError(false);
       dispatch(setSymbol(symbol));
       dispatch(fetchCompanyDetails(symbol));
-      dispatch(fetchStockInfo(symbol));
+      dispatch(fetchQuote(symbol));
       dispatch(fetchPeers(symbol));
     }
   };

@@ -25,7 +25,7 @@ const Graph = () => {
     return labelsArray;
   };
 
-  const myNewLabels = getLabels();
+  const graphLabels = getLabels();
 
   useEffect(() => {
     if (symbol) {
@@ -43,7 +43,7 @@ const Graph = () => {
   }, [symbol]);
 
   const data = {
-    labels: myNewLabels,
+    labels: graphLabels,
     datasets: [
       {
         label: `${symbol}`,
