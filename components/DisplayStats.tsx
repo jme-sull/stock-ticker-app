@@ -16,6 +16,7 @@ function Alert(props: AlertProps) {
 
 const DisplayStats = () => {
   const [showServerError, setShowServerError] = useState(false);
+  const [serverError, setServerError] = useState({});
   const [peerError, setPeerError] = useState(false);
   const [quoteError, setQuoteError] = useState(false);
   const [detailsError, setDetailsError] = useState(false);
@@ -45,12 +46,16 @@ const DisplayStats = () => {
       setShowServerError(true);
       if (peerFetchError) {
         setPeerError(true);
+        setServerError(peerFetchError);
       }
       if (quoteFetchError) {
         setQuoteError(true);
+        console.log(quoteFetchError);
+        setServerError(quoteFetchError);
       }
       if (companyDetailsFetchError) {
         setDetailsError(true);
+        setServerError(companyDetailsFetchError);
       }
     }
   }, [companyDetailsFetchError, quoteFetchError, peerFetchError]);
@@ -132,7 +137,7 @@ const DisplayStats = () => {
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity="error">
-          Server Error
+          {serverError.message}
         </Alert>
       </Snackbar>
     </div>
