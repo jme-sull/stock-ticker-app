@@ -8,8 +8,9 @@ import { createGraphDataUrl } from "../utils/url";
 import Alert from "./Alert";
 
 const Graph = () => {
-  const [showServerError, setShowServerError] = useState(false);
-  const [serverError, setServerError] = useState({ message: "" });
+  const [showAlert, setShowAlert] = useState(false);
+  const [serverError, setServerError] = useState(false);
+  const [serverErrorMessage, setServerErrorMessage] = useState({ message: "" });
   const [stockData, setStockData] = useState([]);
   const [timeStamps, setTimeStamps] = useState([]);
 
@@ -33,8 +34,13 @@ const Graph = () => {
   const graphLabels = getLabels();
 
   const handleClose = (e) => {
-    setShowServerError(false);
+    setShowAlert(false);
   };
+
+  useEffect(() => {
+    //reset errors if symbol changes
+    setServerError(false);
+  }, [symbol]);
 
   useEffect(() => {
     if (symbol) {
@@ -46,8 +52,9 @@ const Graph = () => {
           setTimeStamps(res.data.t);
         })
         .catch((err) => {
-          setServerError(err);
-          setShowServerError(true);
+          setServerError(true);
+          setServerErrorMessage(err);
+          setShowAlert(true);
         });
     }
   }, [symbol]);
@@ -86,15 +93,15 @@ const Graph = () => {
           <h2>
             Daily Closing Price: {oneYearAgoFormatted} to {nowFormatted}
           </h2>
-          {!showServerError && <Line data={data} width={300} height={200} />}
+          {!serverError && <Line data={data} width={300} height={200} />}
 
           <Snackbar
-            open={showServerError}
+            open={showAlert}
             autoHideDuration={6000}
             onClose={handleClose}
           >
             <Alert onClose={handleClose} severity="error">
-              Graph Error: {serverError.message}
+              Graph Error: {serverErrorMessage.message}
             </Alert>
           </Snackbar>
         </>
