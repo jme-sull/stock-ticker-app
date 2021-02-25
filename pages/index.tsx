@@ -1,8 +1,8 @@
 import { NextPage } from "next";
-import DisplayStats from "../components /DisplayStats";
-import Graph from "../components /Graph";
-import Input from "../components /Input";
-import Layout from "../components /Layout";
+import DisplayStats from "../components/DisplayStats";
+import Graph from "../components/Graph";
+import Input from "../components/Input";
+import Layout from "../components/Layout";
 import styles from "./index.module.css";
 
 const HomePage: NextPage = () => {
