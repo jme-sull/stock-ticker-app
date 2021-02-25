@@ -13,9 +13,7 @@ import Alert from "./Alert";
 const DisplayStats = () => {
   const [showServerError, setShowServerError] = useState(false);
   const [serverError, setServerError] = useState({ message: "" });
-  const [peerError, setPeerError] = useState(false);
-  const [quoteError, setQuoteError] = useState(false);
-  const [detailsError, setDetailsError] = useState(false);
+  const [serverErrorType, setServerErrorType] = useState("");
 
   const dispatch = useDispatch();
   const companyProfile = useSelector((state) => state.companyDetails);
@@ -32,25 +30,21 @@ const DisplayStats = () => {
   useEffect(() => {
     //reset errors if symbol changes
     setShowServerError(false);
-    setPeerError(false);
-    setQuoteError(false);
-    setDetailsError(false);
   }, [currentSymbol]);
 
   useEffect(() => {
     if (companyDetailsFetchError || quoteFetchError || peerFetchError) {
       setShowServerError(true);
       if (peerFetchError) {
-        setPeerError(true);
+        setServerErrorType("Similar Companies Fetch Error");
         setServerError(peerFetchError);
       }
       if (quoteFetchError) {
-        setQuoteError(true);
-        console.log(quoteFetchError);
+        setServerErrorType("Quote Fetch Error");
         setServerError(quoteFetchError);
       }
       if (companyDetailsFetchError) {
-        setDetailsError(true);
+        setServerErrorType("Company Details Fetch Error");
         setServerError(companyDetailsFetchError);
       }
     }
@@ -72,58 +66,48 @@ const DisplayStats = () => {
     <div className={styles.container}>
       {currentSymbol && (
         <>
-          <div className={styles.header}>
-            {detailsError ? (
-              <div style={{ color: "red" }}>Error Fetching Company Details</div>
-            ) : (
-              <>
-                <h3>{companyProfile.ticker}</h3>
-                <h2>{companyProfile.name}.</h2>
-              </>
-            )}
-            {!quoteError && <p>{quote.c}</p>}
+          <div
+            style={{ display: companyDetailsFetchError ? "none" : "" }}
+            className={styles.header}
+          >
+            <h3>{companyProfile.ticker}</h3>
+            <h2>{companyProfile.name}.</h2>
           </div>
-          <div className={styles.body}>
-            {quoteError ? (
-              <div style={{ color: "red" }}>Error Fetching Quote</div>
-            ) : (
-              <>
-                <div className={styles.flexHeading}>
-                  <div>Previous Close: </div>
-                  <div>Todays Open: </div>
-                  <div>Todays High: </div>
-                  <div>Todays Low: </div>
-                </div>
-                <div className={styles.flexStats}>
-                  <div>{quote.pc}</div>
-                  <div>{quote.o}</div>
-                  <div>{quote.h}</div>
-                  <div>{quote.l}</div>
-                </div>
-              </>
-            )}
+          <div
+            style={{ display: quoteFetchError ? "none" : "" }}
+            className={styles.body}
+          >
+            <div className={styles.flexHeading}>
+              <div>Previous Close: </div>
+              <div>Todays Open: </div>
+              <div>Todays High: </div>
+              <div>Todays Low: </div>
+            </div>
+            <div className={styles.flexStats}>
+              <div>{quote.pc}</div>
+              <div>{quote.o}</div>
+              <div>{quote.h}</div>
+              <div>{quote.l}</div>
+            </div>
           </div>
-          <div className={styles.peersContainer}>
+          <div
+            style={{ display: peerFetchError ? "none" : "" }}
+            className={styles.peersContainer}
+          >
             <h3>Similar Companies</h3>
-            {peerError ? (
-              <div style={{ color: "red" }}>
-                Error Fetching Similar Companies
-              </div>
-            ) : (
-              <div className={styles.peers}>
-                {peers.slice(0, 3).map((item, index) => {
-                  return (
-                    <div
-                      onClick={(e) => onClick(e, item)}
-                      className={styles.peersItem}
-                      key={index}
-                    >
-                      {item}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+            <div className={styles.peers}>
+              {peers.slice(0, 3).map((item, index) => {
+                return (
+                  <div
+                    onClick={(e) => onClick(e, item)}
+                    className={styles.peersItem}
+                    key={index}
+                  >
+                    {item}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </>
       )}
@@ -133,7 +117,7 @@ const DisplayStats = () => {
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity="error">
-          Display Error: {serverError.message}
+          {serverErrorType}: {serverError.message}
         </Alert>
       </Snackbar>
     </div>
