@@ -1,11 +1,12 @@
 .container {
     display: flex;
     margin: 2%;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
 
 .flexItem {
     width: 45%;
+    padding: 2%;
 
 }
 
@@ -26,6 +27,7 @@
     }
 
     .flexItem {
+        margin-top: 1rem;
         width: 100%;
     }
 }
