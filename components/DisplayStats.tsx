@@ -72,6 +72,7 @@ const DisplayStats = () => {
           >
             <h3>{companyProfile.ticker}</h3>
             <h2>{companyProfile.name}.</h2>
+            <p>{quote.c}</p>
           </div>
           <div
             style={{ display: quoteFetchError ? "none" : "" }}
